@@ -52,11 +52,11 @@ public class Parser {
     public static void processingJson(String filename) {
         log.info("Starting parsing of file {}", filename);
 
-        City city = Parser.parseCityFromJson(jsonDirPath + "\\" + filename + ".json");
+        City city = Parser.parseCityFromJson(jsonDirPath + System.getProperty("file.separator") + filename + ".json");
 
         if (city != null) {
             log.debug("City successfully retrieved: {}", city.getSlug());
-            Parser.toXML(city, xmlDirPath + "\\" + filename + ".xml");
+            Parser.toXML(city, xmlDirPath + System.getProperty("file.separator") + filename + ".xml");
         } else {
             log.warn("Failed to parse file {}.json", filename);
         }
