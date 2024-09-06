@@ -17,8 +17,8 @@ public class Parser {
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final XmlMapper xmlMapper = new XmlMapper();
     private static final String currentDirectory = System.getProperty("user.dir");
-    private static final Path jsonDirPath = Paths.get(currentDirectory, "src", "main", "java", "io", "github", "dziodzi", "jsons");
-    private static final Path xmlDirPath = Paths.get(currentDirectory, "src", "main", "java", "io", "github", "dziodzi", "xmls");
+    private static final Path jsonDirPath = Paths.get(currentDirectory, "lab2", "src", "main", "java", "io", "github", "dziodzi", "jsons");
+    private static final Path xmlDirPath = Paths.get(currentDirectory, "lab2", "src", "main", "java", "io", "github", "dziodzi", "xmls");
 
     private static City parseCityFromJson(String filePath) {
         try {

@@ -1,9 +1,5 @@
 plugins {
-    id 'application'
-}
-
-application {
-    mainClass = 'io.github.dziodzi.Main'
+    id 'java'
 }
 
 group = 'io.github.dziodzi'
@@ -14,21 +10,7 @@ repositories {
 }
 
 dependencies {
-    // https://mvnrepository.com/artifact/org.projectlombok/lombok
-    implementation 'org.projectlombok:lombok:1.18.28'
-    annotationProcessor 'org.projectlombok:lombok:1.18.28'
-
-    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
-
-   // https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-xml
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.15.2'
-
-    // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
-    implementation 'org.slf4j:slf4j-api:2.0.9'
-
-    // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
-    implementation 'org.slf4j:slf4j-simple:2.0.9'
+    implementation project(':lab2')
 }
 
 test {
