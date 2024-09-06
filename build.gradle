@@ -1,0 +1,18 @@
+plugins {
+    id 'java'
+}
+
+group = 'io.github.dziodzi'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':lab2')
+}
+
+test {
+    useJUnitPlatform()
+}
