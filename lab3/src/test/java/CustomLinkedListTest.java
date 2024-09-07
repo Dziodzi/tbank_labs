@@ -28,11 +28,29 @@ public class CustomLinkedListTest {
     }
 
     @Test
-    public void testRemove() {
+    public void testRemoveFirst() {
         list.remove(0);
         assertEquals(2, list.size());
         assertFalse(list.contains(1));
         assertEquals(2, list.get(0));
+        assertEquals(3, list.get(1));
+    }
+
+    @Test
+    public void testRemoveLast() {
+        list.remove(2);
+        assertEquals(2, list.size());
+        assertEquals(1, list.get(0));
+        assertEquals(2, list.get(1));
+        assertFalse(list.contains(3));
+    }
+
+    @Test
+    public void testRemoveMiddle() {
+        list.remove(1);
+        assertEquals(2, list.size());
+        assertEquals(1, list.get(0));
+        assertFalse(list.contains(2));
         assertEquals(3, list.get(1));
     }
 

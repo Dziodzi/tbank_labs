@@ -38,52 +38,29 @@ public class CustomLinkedList<T> {
     }
 
     public T get(int index) {
-        if (index < 0 || index >= size) {
-            throw new ArrayIndexOutOfBoundsException("CustomLinkedList index is out of range: " + index);
-        }
-        Node<T> current;
-        if (index < size / 2) {
-            current = head;
-            for (int i = 0; i < index; i++) {
-                current = current.next;
-            }
-        } else {
-            current = tail;
-            for (int i = size - 1; i > index; i--) {
-                current = current.prev;
-            }
-        }
-        return current.data;
+        return getNode(index).data;
     }
 
     public void remove(int index) {
-        if (index < 0 || index >= size) {
-            throw new ArrayIndexOutOfBoundsException("CustomLinkedList index is out of range: " + index);
-        }
-        if (index == 0) {
+        Node<T> current = getNode(index);
+
+        if (current == head) {
             head = head.next;
             if (head != null) {
                 head.prev = null;
             } else {
                 tail = null;
             }
-        } else if (index == size - 1) {
+        } else if (current == tail) {
             tail = tail.prev;
-            if (tail != null) {
-                tail.next = null;
-            } else {
-                head = null;
-            }
+            tail.next = null;
         } else {
-            Node<T> current = head;
-            for (int i = 0; i < index; i++) {
-                current = current.next;
-            }
             Node<T> prevNode = current.prev;
             Node<T> nextNode = current.next;
             prevNode.next = nextNode;
             nextNode.prev = prevNode;
         }
+
         size--;
     }
 
@@ -119,5 +96,26 @@ public class CustomLinkedList<T> {
             index++;
         }
         return stringBuilder.toString();
+    }
+
+    private Node<T> getNode(int index) {
+        if (index < 0 || index >= size) {
+            throw new ArrayIndexOutOfBoundsException("CustomLinkedList index is out of range: " + index);
+        }
+
+        Node<T> current;
+        if (index < size / 2) {
+            current = head;
+            for (int i = 0; i < index; i++) {
+                current = current.next;
+            }
+        } else {
+            current = tail;
+            for (int i = size - 1; i > index; i--) {
+                current = current.prev;
+            }
+        }
+
+        return current;
     }
 }
