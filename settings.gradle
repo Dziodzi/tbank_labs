@@ -1,2 +1,4 @@
 rootProject.name = 'tbank-labs'
 include 'lab2'
+include 'lab3'
+
