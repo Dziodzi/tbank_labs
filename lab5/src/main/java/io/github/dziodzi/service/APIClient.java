@@ -5,6 +5,7 @@ import io.github.dziodzi.entity.Location;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -21,11 +22,17 @@ public class APIClient {
 
     public List<Category> fetchCategories() {
         Category[] categories = restTemplate.getForObject(CATEGORIES_URL, Category[].class);
+        if (categories == null) {
+            return new ArrayList<>();
+        }
         return List.of(categories);
     }
 
     public List<Location> fetchLocations() {
         Location[] locations = restTemplate.getForObject(LOCATIONS_URL, Location[].class);
+        if (locations == null) {
+            return new ArrayList<>();
+        }
         return List.of(locations);
     }
 }

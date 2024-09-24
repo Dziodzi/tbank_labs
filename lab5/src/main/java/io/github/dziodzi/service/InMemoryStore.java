@@ -1,11 +1,13 @@
 package io.github.dziodzi.service;
 
-import org.springframework.stereotype.Component;
+import io.github.dziodzi.entity.Category;
+import io.github.dziodzi.entity.Location;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Collection;
 
-@Component
 public class InMemoryStore<T> {
     private final ConcurrentHashMap<Integer, T> store = new ConcurrentHashMap<>();
     private int idCounter = 0;
@@ -31,5 +33,19 @@ public class InMemoryStore<T> {
 
     public void delete(int id) {
         store.remove(id);
+    }
+
+    @Configuration
+    public static class StoreConfiguration {
+
+        @Bean
+        public InMemoryStore<Location> locationStore() {
+            return new InMemoryStore<>();
+        }
+
+        @Bean
+        public InMemoryStore<Category> categoryStore() {
+            return new InMemoryStore<>();
+        }
     }
 }

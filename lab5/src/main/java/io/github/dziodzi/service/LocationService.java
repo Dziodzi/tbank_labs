@@ -1,11 +1,13 @@
 package io.github.dziodzi.service;
 
 import io.github.dziodzi.entity.Location;
+import io.github.dziodzi.tools.LogExecutionTime;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
 @Service
+@LogExecutionTime
 public class LocationService {
 
     private final InMemoryStore<Location> locationStore;
@@ -33,5 +35,10 @@ public class LocationService {
     public void deleteLocation(int id) {
         locationStore.delete(id);
     }
-}
 
+    protected void initializeLocations(Collection<Location> locations) {
+        for (Location location : locations) {
+            locationStore.create(location);
+        }
+    }
+}

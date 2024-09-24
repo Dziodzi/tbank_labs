@@ -1,11 +1,13 @@
 package io.github.dziodzi.service;
 
 import io.github.dziodzi.entity.Category;
+import io.github.dziodzi.tools.LogExecutionTime;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
 @Service
+@LogExecutionTime
 public class CategoryService {
 
     private final InMemoryStore<Category> categoryStore;
@@ -32,5 +34,11 @@ public class CategoryService {
 
     public void deleteCategory(int id) {
         categoryStore.delete(id);
+    }
+
+    protected void initializeCategories(Collection<Category> categories) {
+        for (Category category : categories) {
+            categoryStore.create(category);
+        }
     }
 }

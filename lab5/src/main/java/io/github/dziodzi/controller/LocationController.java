@@ -1,7 +1,7 @@
 package io.github.dziodzi.controller;
 
 import io.github.dziodzi.entity.Location;
-import io.github.dziodzi.service.InMemoryStore;
+import io.github.dziodzi.service.LocationService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -10,34 +10,34 @@ import java.util.Collection;
 @RequestMapping("/api/v1/locations")
 public class LocationController {
 
-    private final InMemoryStore<Location> locationStore;
+    private final LocationService locationService;
 
-    public LocationController(InMemoryStore<Location> locationStore) {
-        this.locationStore = locationStore;
+    public LocationController(LocationService locationService) {
+        this.locationService = locationService;
     }
 
     @GetMapping
     public Collection<Location> getAllLocations() {
-        return locationStore.getAll();
+        return locationService.getAllLocations();
     }
 
     @GetMapping("/{id}")
     public Location getLocationById(@PathVariable int id) {
-        return locationStore.getById(id);
+        return locationService.getLocationById(id);
     }
 
     @PostMapping
     public Location createLocation(@RequestBody Location location) {
-        return locationStore.create(location);
+        return locationService.createLocation(location);
     }
 
     @PutMapping("/{id}")
     public Location updateLocation(@PathVariable int id, @RequestBody Location location) {
-        return locationStore.update(id, location);
+        return locationService.updateLocation(id, location);
     }
 
     @DeleteMapping("/{id}")
     public void deleteLocation(@PathVariable int id) {
-        locationStore.delete(id);
+        locationService.deleteLocation(id);
     }
 }

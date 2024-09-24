@@ -1,7 +1,7 @@
 package io.github.dziodzi.controller;
 
 import io.github.dziodzi.entity.Category;
-import io.github.dziodzi.service.InMemoryStore;
+import io.github.dziodzi.service.CategoryService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -10,34 +10,34 @@ import java.util.Collection;
 @RequestMapping("/api/v1/places/categories")
 public class CategoryController {
 
-    private final InMemoryStore<Category> categoryStore;
+    private final CategoryService categoryService;
 
-    public CategoryController(InMemoryStore<Category> categoryStore) {
-        this.categoryStore = categoryStore;
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
     }
 
     @GetMapping
     public Collection<Category> getAllCategories() {
-        return categoryStore.getAll();
+        return categoryService.getAllCategories();
     }
 
     @GetMapping("/{id}")
     public Category getCategoryById(@PathVariable int id) {
-        return categoryStore.getById(id);
+        return categoryService.getCategoryById(id);
     }
 
     @PostMapping
     public Category createCategory(@RequestBody Category category) {
-        return categoryStore.create(category);
+        return categoryService.createCategory(category);
     }
 
     @PutMapping("/{id}")
     public Category updateCategory(@PathVariable int id, @RequestBody Category category) {
-        return categoryStore.update(id, category);
+        return categoryService.updateCategory(id, category);
     }
 
     @DeleteMapping("/{id}")
     public void deleteCategory(@PathVariable int id) {
-        categoryStore.delete(id);
+        categoryService.deleteCategory(id);
     }
 }
