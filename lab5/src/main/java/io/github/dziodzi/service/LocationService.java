@@ -3,11 +3,13 @@ package io.github.dziodzi.service;
 import io.github.dziodzi.entity.Location;
 import io.github.dziodzi.entity.dto.LocationDTO;
 import io.github.dziodzi.tools.LogExecutionTime;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
+@Slf4j
 @Service
 @LogExecutionTime
 public class LocationService {
@@ -28,21 +30,38 @@ public class LocationService {
     }
 
     public Location getLocationBySlug(String key) {
+        if (!locationStore.getAll().containsKey(key)) {
+            log.warn("Location with slug {} not found for GET operation", key);
+            return null;
+        }
         return new Location(key, locationStore.get(key));
     }
 
     public Location createLocation(Location location) {
+        if (locationStore.get(location.getSlug()) != null) {
+            log.warn("Location with slug {} already exists", location.getSlug());
+            return null;
+        }
         locationStore.create(location.getSlug(), location.toDTO());
         return location;
     }
 
-    public Location updateLocation(String key, Location location) {
-        locationStore.update(key, location.toDTO());
+    public Location updateLocation(String key, LocationDTO locationDTO) {
+        if (locationStore.get(key) == null) {
+            log.warn("Location with slug {} not found for UPDATE operation", key);
+            return null;
+        }
+        locationStore.update(key, locationDTO);
         return getLocationBySlug(key);
     }
 
-    public void deleteLocation(String key) {
+    public boolean deleteLocation(String key) {
+        if (locationStore.get(key) == null) {
+            log.warn("Location with slug {} not found for DELETE operation", key);
+            return false;
+        }
         locationStore.delete(key);
+        return true;
     }
 
     protected void initializeLocations(Collection<Location> locations) {
