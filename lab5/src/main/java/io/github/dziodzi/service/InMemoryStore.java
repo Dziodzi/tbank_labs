@@ -1,50 +1,48 @@
 package io.github.dziodzi.service;
 
-import io.github.dziodzi.entity.Category;
-import io.github.dziodzi.entity.Location;
+import io.github.dziodzi.entity.dto.CategoryDTO;
+import io.github.dziodzi.entity.dto.LocationDTO;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Collection;
 
-public class InMemoryStore<T> {
-    private final ConcurrentHashMap<Integer, T> store = new ConcurrentHashMap<>();
-    private int idCounter = 0;
+public class InMemoryStore<K, T> {
+    private final ConcurrentHashMap<K, T> store = new ConcurrentHashMap<>();
 
-    public Collection<T> getAll() {
-        return store.values();
+    public ConcurrentHashMap<K, T> getAll() {
+        return store;
     }
 
-    public T getById(int id) {
-        return store.get(id);
+    public T get(K key) {
+        return store.get(key);
     }
 
-    public T create(T entity) {
-        int id = ++idCounter;
-        store.put(id, entity);
+    public T create(K key, T entity) {
+        store.put(key, entity);
         return entity;
     }
 
-    public T update(int id, T entity) {
-        store.put(id, entity);
+    public T update(K key, T entity) {
+        store.put(key, entity);
         return entity;
     }
 
-    public void delete(int id) {
-        store.remove(id);
+    public void delete(K key) {
+        store.remove(key);
     }
 
     @Configuration
     public static class StoreConfiguration {
 
         @Bean
-        public InMemoryStore<Location> locationStore() {
+        public InMemoryStore<String, LocationDTO> locationStore() {
             return new InMemoryStore<>();
         }
 
         @Bean
-        public InMemoryStore<Category> categoryStore() {
+        public InMemoryStore<Integer, CategoryDTO> categoryStore() {
             return new InMemoryStore<>();
         }
     }

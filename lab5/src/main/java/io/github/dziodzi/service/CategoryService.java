@@ -1,35 +1,44 @@
 package io.github.dziodzi.service;
 
 import io.github.dziodzi.entity.Category;
+import io.github.dziodzi.entity.dto.CategoryDTO;
 import io.github.dziodzi.tools.LogExecutionTime;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Service
 @LogExecutionTime
 public class CategoryService {
 
-    private final InMemoryStore<Category> categoryStore;
+    private final InMemoryStore<Integer, CategoryDTO> categoryStore;
 
-    public CategoryService(InMemoryStore<Category> categoryStore) {
+    public CategoryService(InMemoryStore<Integer, CategoryDTO> categoryStore) {
         this.categoryStore = categoryStore;
     }
 
     public Collection<Category> getAllCategories() {
-        return categoryStore.getAll();
+        var all = categoryStore.getAll();
+        Collection<Category> categories = new ArrayList<>();
+        for (Integer key : all.keySet()) {
+            categories.add(getCategoryById(key));
+        }
+        return categories;
     }
 
     public Category getCategoryById(int id) {
-        return categoryStore.getById(id);
+        return new Category(id, categoryStore.get(id));
     }
 
     public Category createCategory(Category category) {
-        return categoryStore.create(category);
+        categoryStore.create(category.getId(), category.toDTO());
+        return category;
     }
 
-    public Category updateCategory(int id, Category category) {
-        return categoryStore.update(id, category);
+    public Category updateCategory(int id, CategoryDTO categoryDTO) {
+        categoryStore.update(id, categoryDTO);
+        return getCategoryById(id);
     }
 
     public void deleteCategory(int id) {
@@ -38,7 +47,7 @@ public class CategoryService {
 
     protected void initializeCategories(Collection<Category> categories) {
         for (Category category : categories) {
-            categoryStore.create(category);
+            categoryStore.create(category.getId(), category.toDTO());
         }
     }
 }

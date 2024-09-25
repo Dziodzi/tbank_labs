@@ -1,6 +1,7 @@
 package io.github.dziodzi.controller;
 
 import io.github.dziodzi.entity.Category;
+import io.github.dziodzi.entity.dto.CategoryDTO;
 import io.github.dziodzi.service.CategoryService;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,8 +33,8 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    public Category updateCategory(@PathVariable int id, @RequestBody Category category) {
-        return categoryService.updateCategory(id, category);
+    public Category updateCategory(@PathVariable int id, @RequestBody CategoryDTO categoryDTO) {
+        return categoryService.updateCategory(id, categoryDTO);
     }
 
     @DeleteMapping("/{id}")

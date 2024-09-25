@@ -21,9 +21,9 @@ public class LocationController {
         return locationService.getAllLocations();
     }
 
-    @GetMapping("/{id}")
-    public Location getLocationById(@PathVariable int id) {
-        return locationService.getLocationById(id);
+    @GetMapping("/{key}")
+    public Location getLocationBySlug(@PathVariable String key) {
+        return locationService.getLocationBySlug(key);
     }
 
     @PostMapping
@@ -31,13 +31,13 @@ public class LocationController {
         return locationService.createLocation(location);
     }
 
-    @PutMapping("/{id}")
-    public Location updateLocation(@PathVariable int id, @RequestBody Location location) {
-        return locationService.updateLocation(id, location);
+    @PutMapping("/{key}")
+    public Location updateLocation(@PathVariable String key, @RequestBody Location location) {
+        return locationService.updateLocation(key, location);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteLocation(@PathVariable int id) {
-        locationService.deleteLocation(id);
+    @DeleteMapping("/{key}")
+    public void deleteLocation(@PathVariable String key) {
+        locationService.deleteLocation(key);
     }
 }
