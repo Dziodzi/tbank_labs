@@ -20,7 +20,7 @@ public class AppConfig {
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
-    
+
     @Bean
     public CommandLineRunner init(DataInitializationService dataInitializationService) {
         return args -> {
@@ -31,6 +31,9 @@ public class AppConfig {
             } catch (Exception e) {
                 log.error("Error during data initialization: ", e);
             }
+
+            log.info("Swagger UI is available at: http://localhost:8080/swagger-ui.html");
+            log.info("API documentation is available at: http://localhost:8080/v3/api-docs");
         };
     }
 }
