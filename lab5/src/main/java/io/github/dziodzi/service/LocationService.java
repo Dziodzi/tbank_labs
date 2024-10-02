@@ -53,7 +53,7 @@ public class LocationService {
             throw new ResourceNotFoundException("Location with slug " + key + " not found");
         }
         locationStore.update(key, locationDTO);
-        return getLocationBySlug(key);
+        return new Location(key, locationDTO);
     }
 
     public boolean deleteLocation(String key) {

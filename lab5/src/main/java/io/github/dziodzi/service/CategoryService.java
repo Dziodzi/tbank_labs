@@ -53,8 +53,9 @@ public class CategoryService {
             throw new ResourceNotFoundException("Category with id " + id + " not found");
         }
         categoryStore.update(id, categoryDTO);
-        return getCategoryById(id);
+        return new Category(id, categoryDTO);
     }
+
 
     public boolean deleteCategory(int id) {
         if (!categoryStore.getAll().containsKey(id)) {
