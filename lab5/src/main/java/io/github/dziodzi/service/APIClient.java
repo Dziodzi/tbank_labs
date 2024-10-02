@@ -2,12 +2,15 @@ package io.github.dziodzi.service;
 
 import io.github.dziodzi.entity.Category;
 import io.github.dziodzi.entity.Location;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestClientException;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Component
 public class APIClient {
 
@@ -21,18 +24,28 @@ public class APIClient {
     }
 
     public List<Category> fetchCategories() {
-        Category[] categories = restTemplate.getForObject(CATEGORIES_URL, Category[].class);
-        if (categories == null) {
-            return new ArrayList<>();
+        try {
+            Category[] categories = restTemplate.getForObject(CATEGORIES_URL, Category[].class);
+            if (categories == null) {
+                return new ArrayList<>();
+            }
+            return List.of(categories);
+        } catch (RestClientException e) {
+            log.error("Failed to fetch categories", e);
+            throw new RuntimeException("Failed to fetch categories", e);
         }
-        return List.of(categories);
     }
 
     public List<Location> fetchLocations() {
-        Location[] locations = restTemplate.getForObject(LOCATIONS_URL, Location[].class);
-        if (locations == null) {
-            return new ArrayList<>();
+        try {
+            Location[] locations = restTemplate.getForObject(LOCATIONS_URL, Location[].class);
+            if (locations == null) {
+                return new ArrayList<>();
+            }
+            return List.of(locations);
+        } catch (RestClientException e) {
+            log.error("Failed to fetch locations", e);
+            throw new RuntimeException("Failed to fetch locations", e);
         }
-        return List.of(locations);
     }
 }

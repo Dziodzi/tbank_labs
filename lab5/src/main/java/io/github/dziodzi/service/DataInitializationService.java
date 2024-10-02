@@ -24,14 +24,24 @@ public class DataInitializationService {
     }
 
     public void initializeData() {
-        log.info("-> Categories initialization started.");
-        List<Category> categories = apiClient.fetchCategories();
-        categoryService.initializeCategories(categories);
-        log.info("--> Categories initialization finished.");
+        try {
+            log.info("-> Categories initialization started.");
+            List<Category> categories = apiClient.fetchCategories();
+            categoryService.initializeCategories(categories);
+            log.info("--> Categories initialization finished.");
+        } catch (Exception e) {
+            log.error("Failed to initialize categories", e);
+            throw new RuntimeException("Failed to initialize categories", e);
+        }
 
-        log.info("-> Locations initialization started.");
-        List<Location> locations = apiClient.fetchLocations();
-        locationService.initializeLocations(locations);
-        log.info("--> Locations initialization finished.");
+        try {
+            log.info("-> Locations initialization started.");
+            List<Location> locations = apiClient.fetchLocations();
+            locationService.initializeLocations(locations);
+            log.info("--> Locations initialization finished.");
+        } catch (Exception e) {
+            log.error("Failed to initialize locations", e);
+            throw new RuntimeException("Failed to initialize locations", e);
+        }
     }
 }

@@ -57,15 +57,12 @@ public class LocationController {
     })
     @PostMapping
     public ResponseEntity<Location> createLocation(@RequestBody Location location) {
-        try {
-            if (locationService.createLocation(location) == null) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).build();
-            }
-            return ResponseEntity.status(HttpStatus.CREATED).body(location);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        if (locationService.createLocation(location) == null) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
+        return ResponseEntity.status(HttpStatus.CREATED).body(location);
     }
+
 
     @Operation(summary = "Update location", description = "Updates an existing location by its slug.")
     @ApiResponses(value = {

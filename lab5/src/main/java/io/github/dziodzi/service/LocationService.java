@@ -2,6 +2,7 @@ package io.github.dziodzi.service;
 
 import io.github.dziodzi.entity.Location;
 import io.github.dziodzi.entity.dto.LocationDTO;
+import io.github.dziodzi.exception.ResourceNotFoundException;
 import io.github.dziodzi.tools.LogExecutionTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,7 @@ public class LocationService {
     public Location getLocationBySlug(String key) {
         if (!locationStore.getAll().containsKey(key)) {
             log.warn("Location with slug {} not found for GET operation", key);
-            return null;
+            throw new ResourceNotFoundException("Location with slug " + key + " not found");
         }
         return new Location(key, locationStore.get(key));
     }
@@ -40,7 +41,7 @@ public class LocationService {
     public Location createLocation(Location location) {
         if (locationStore.get(location.getSlug()) != null) {
             log.warn("Location with slug {} already exists", location.getSlug());
-            return null;
+            throw new IllegalArgumentException("Location with slug " + location.getSlug() + " already exists");
         }
         locationStore.create(location.getSlug(), location.toDTO());
         return location;
@@ -49,7 +50,7 @@ public class LocationService {
     public Location updateLocation(String key, LocationDTO locationDTO) {
         if (locationStore.get(key) == null) {
             log.warn("Location with slug {} not found for UPDATE operation", key);
-            return null;
+            throw new ResourceNotFoundException("Location with slug " + key + " not found");
         }
         locationStore.update(key, locationDTO);
         return getLocationBySlug(key);
@@ -58,7 +59,7 @@ public class LocationService {
     public boolean deleteLocation(String key) {
         if (locationStore.get(key) == null) {
             log.warn("Location with slug {} not found for DELETE operation", key);
-            return false;
+            throw new ResourceNotFoundException("Location with slug " + key + " not found");
         }
         locationStore.delete(key);
         return true;

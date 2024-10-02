@@ -58,14 +58,10 @@ public class CategoryController {
     })
     @PostMapping
     public ResponseEntity<Category> createCategory(@RequestBody Category category) {
-        try {
-            if (categoryService.createCategory(category) == null) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).build();
-            }
-            return ResponseEntity.status(HttpStatus.CREATED).body(category);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        if (categoryService.createCategory(category) == null) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
+        return ResponseEntity.status(HttpStatus.CREATED).body(category);
     }
 
     @Operation(summary = "Update category", description = "Updates an existing category by its ID.")
