@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.client.RestClientException;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +17,11 @@ public class APIClient {
 
     private final RestTemplate restTemplate;
 
-    private static final String CATEGORIES_URL = "https://kudago.com/public-api/v1.4/place-categories";
-    private static final String LOCATIONS_URL = "https://kudago.com/public-api/v1.4/locations";
+    @Value("${custom.api.categories-url}")
+    private String categoriesUrl;
+
+    @Value("${custom.api.locations-url}")
+    private String locationsUrl;
 
     public APIClient(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
@@ -25,7 +29,7 @@ public class APIClient {
 
     public List<Category> fetchCategories() {
         try {
-            Category[] categories = restTemplate.getForObject(CATEGORIES_URL, Category[].class);
+            Category[] categories = restTemplate.getForObject(categoriesUrl, Category[].class);
             if (categories == null) {
                 return new ArrayList<>();
             }
@@ -38,7 +42,7 @@ public class APIClient {
 
     public List<Location> fetchLocations() {
         try {
-            Location[] locations = restTemplate.getForObject(LOCATIONS_URL, Location[].class);
+            Location[] locations = restTemplate.getForObject(locationsUrl, Location[].class);
             if (locations == null) {
                 return new ArrayList<>();
             }
