@@ -28,7 +28,7 @@ public class LocationController implements LocationApi {
 
     @Override
     public ResponseEntity<Location> createLocation(Location location) {
-        return ResponseEntity.ok(locationService.createLocation(location));
+        return ResponseEntity.status(201).body(locationService.createLocation(location));
     }
 
     @Override

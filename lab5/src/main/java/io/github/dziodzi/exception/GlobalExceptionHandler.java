@@ -22,6 +22,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 
+    @ExceptionHandler(NoContentException.class)
+    public ResponseEntity<String> handleResourceDeletionException(NoContentException ex) {
+        log.warn("Attempted to delete resource but it does not exist: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Resource was not found; no content to delete.");
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGenericException(Exception ex) {
         log.error("An error occurred: {}", ex.getMessage());

@@ -2,6 +2,7 @@ package io.github.dziodzi.service;
 
 import io.github.dziodzi.entity.Category;
 import io.github.dziodzi.entity.dto.CategoryDTO;
+import io.github.dziodzi.exception.NoContentException;
 import io.github.dziodzi.exception.ResourceNotFoundException;
 import io.github.dziodzi.repository.InMemoryStore;
 import io.github.dziodzi.tools.LogExecutionTime;
@@ -25,6 +26,9 @@ public class CategoryService {
         Collection<Category> categories = new ArrayList<>();
         for (Integer key : all.keySet()) {
             categories.add(getCategoryById(key));
+        }
+        if (categories.isEmpty()) {
+            throw new NoContentException("No categories found");
         }
         return categories;
     }

@@ -3,10 +3,10 @@ package io.github.dziodzi.service;
 import io.github.dziodzi.entity.Category;
 import io.github.dziodzi.entity.Location;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.client.RestClientException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,18 +16,23 @@ import java.util.List;
 public class APIClient {
 
     private final RestTemplate restTemplate;
+    private final String categoriesUrl;
+    private final String locationsUrl;
 
-    @Value("${custom.api.categories-url}")
-    private String categoriesUrl;
-
-    @Value("${custom.api.locations-url}")
-    private String locationsUrl;
-
-    public APIClient(RestTemplate restTemplate) {
+     public APIClient(RestTemplate restTemplate,
+                     @Value("${custom.api.categories-url}") String categoriesUrl,
+                     @Value("${custom.api.locations-url}") String locationsUrl) {
+       
         this.restTemplate = restTemplate;
+        this.categoriesUrl = categoriesUrl;
+        this.locationsUrl = locationsUrl;
+
+        log.info("Categories URL: {}", categoriesUrl);
+        log.info("Locations URL: {}", locationsUrl);
     }
 
     public List<Category> fetchCategories() {
+        log.info("Fetching categories from URL: {}", categoriesUrl);
         try {
             Category[] categories = restTemplate.getForObject(categoriesUrl, Category[].class);
             if (categories == null) {
@@ -41,6 +46,7 @@ public class APIClient {
     }
 
     public List<Location> fetchLocations() {
+        log.info("Fetching locations from URL: {}", locationsUrl);
         try {
             Location[] locations = restTemplate.getForObject(locationsUrl, Location[].class);
             if (locations == null) {

@@ -2,6 +2,7 @@ package io.github.dziodzi.service;
 
 import io.github.dziodzi.entity.Location;
 import io.github.dziodzi.entity.dto.LocationDTO;
+import io.github.dziodzi.exception.NoContentException;
 import io.github.dziodzi.exception.ResourceNotFoundException;
 import io.github.dziodzi.repository.InMemoryStore;
 import io.github.dziodzi.tools.LogExecutionTime;
@@ -25,6 +26,9 @@ public class LocationService {
         Collection<Location> locations = new ArrayList<>();
         for (String key : all.keySet()) {
             locations.add(getLocationBySlug(key));
+        }
+        if (locations.isEmpty()) {
+            throw new NoContentException("No location found");
         }
         return locations;
     }
