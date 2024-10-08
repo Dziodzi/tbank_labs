@@ -1,4 +1,4 @@
-package io.github.dziodzi.service;
+package io.github.dziodzi.repository;
 
 import io.github.dziodzi.entity.dto.CategoryDTO;
 import io.github.dziodzi.entity.dto.LocationDTO;
@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.Collection;
 
 public class InMemoryStore<K, T> {
     private final ConcurrentHashMap<K, T> store = new ConcurrentHashMap<>();
@@ -24,9 +23,8 @@ public class InMemoryStore<K, T> {
         return entity;
     }
 
-    public T update(K key, T entity) {
+    public void update(K key, T entity) {
         store.put(key, entity);
-        return entity;
     }
 
     public void delete(K key) {

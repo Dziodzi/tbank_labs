@@ -3,6 +3,7 @@ package io.github.dziodzi.service;
 import io.github.dziodzi.entity.Category;
 import io.github.dziodzi.entity.dto.CategoryDTO;
 import io.github.dziodzi.exception.ResourceNotFoundException;
+import io.github.dziodzi.repository.InMemoryStore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -88,16 +89,24 @@ class CategoryServiceTest {
 
     @Test
     void testDeleteCategory_Success() {
-        when(mockCategoryStore.getAll()).thenReturn(new ConcurrentHashMap<>(Map.of(1, new CategoryDTO("Slug", "Name"))));
+        CategoryDTO dto = new CategoryDTO("Slug", "Name");
 
-        boolean isDeleted = categoryService.deleteCategory(1);
+        when(mockCategoryStore.getAll()).thenReturn(new ConcurrentHashMap<>(Map.of(1, dto)));
+        when(mockCategoryStore.get(1)).thenReturn(dto);
 
-        assertTrue(isDeleted);
+        categoryService.deleteCategory(1);
+
         verify(mockCategoryStore).delete(1);
+
+        when(mockCategoryStore.getAll()).thenReturn(new ConcurrentHashMap<>());
+
+        Exception exception = assertThrows(ResourceNotFoundException.class, () -> categoryService.getCategoryById(1));
+        assertEquals("Category with id 1 not found", exception.getMessage());
     }
 
+
     @Test
-    void testDeleteCategory_NotFound() {
+    void testDeleteCategory_NotFound() {;
         when(mockCategoryStore.getAll()).thenReturn(new ConcurrentHashMap<>());
 
         Exception exception = assertThrows(ResourceNotFoundException.class, () -> categoryService.deleteCategory(1));

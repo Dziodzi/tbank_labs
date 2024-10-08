@@ -3,6 +3,7 @@ package io.github.dziodzi.service;
 import io.github.dziodzi.entity.Category;
 import io.github.dziodzi.entity.Location;
 import io.github.dziodzi.tools.LogExecutionTime;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -11,17 +12,12 @@ import java.util.List;
 @Slf4j
 @Service
 @LogExecutionTime
+@RequiredArgsConstructor
 public class DataInitializationService {
 
     private final CategoryService categoryService;
     private final LocationService locationService;
     private final APIClient apiClient;
-
-    public DataInitializationService(CategoryService categoryService, LocationService locationService, APIClient apiClient) {
-        this.categoryService = categoryService;
-        this.locationService = locationService;
-        this.apiClient = apiClient;
-    }
 
     public void initializeData() {
         try {

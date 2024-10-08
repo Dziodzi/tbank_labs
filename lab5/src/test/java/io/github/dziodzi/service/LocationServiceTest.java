@@ -2,7 +2,9 @@ package io.github.dziodzi.service;
 
 import io.github.dziodzi.entity.Location;
 import io.github.dziodzi.entity.dto.LocationDTO;
+import io.github.dziodzi.entity.dto.LocationDTO;
 import io.github.dziodzi.exception.ResourceNotFoundException;
+import io.github.dziodzi.repository.InMemoryStore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -67,8 +69,9 @@ class LocationServiceTest {
 
     @Test
     void testUpdateLocation_Success() {
-        LocationDTO updatedDTO = new LocationDTO("Updated Location");
-        when(mockLocationStore.get("slug")).thenReturn(new LocationDTO("Old Location"));
+        LocationDTO updatedDTO = new LocationDTO("Name");
+        when(mockLocationStore.getAll()).thenReturn(new ConcurrentHashMap<>(Map.of("slug", new LocationDTO("Namy"))));
+        when(mockLocationStore.get("slug")).thenReturn(updatedDTO);
 
         Location updatedLocation = locationService.updateLocation("slug", updatedDTO);
 
@@ -87,12 +90,19 @@ class LocationServiceTest {
 
     @Test
     void testDeleteLocation_Success() {
-        when(mockLocationStore.get("slug")).thenReturn(new LocationDTO("Test Location"));
+        LocationDTO dto = new LocationDTO("Updated Location");
 
-        boolean isDeleted = locationService.deleteLocation("slug");
+        when(mockLocationStore.getAll()).thenReturn(new ConcurrentHashMap<>(Map.of("slug", dto)));
+        when(mockLocationStore.get("slug")).thenReturn(dto);
 
-        assertTrue(isDeleted);
+        locationService.deleteLocation("slug");
+
         verify(mockLocationStore).delete("slug");
+
+        when(mockLocationStore.getAll()).thenReturn(new ConcurrentHashMap<>());
+
+        Exception exception = assertThrows(ResourceNotFoundException.class, () -> locationService.getLocationBySlug("slug"));
+        assertEquals("Location with slug slug not found", exception.getMessage());
     }
 
     @Test
