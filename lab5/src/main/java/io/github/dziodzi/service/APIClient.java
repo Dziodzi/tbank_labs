@@ -22,6 +22,7 @@ public class APIClient {
      public APIClient(RestTemplate restTemplate,
                      @Value("${custom.api.categories-url}") String categoriesUrl,
                      @Value("${custom.api.locations-url}") String locationsUrl) {
+       
         this.restTemplate = restTemplate;
         this.categoriesUrl = categoriesUrl;
         this.locationsUrl = locationsUrl;
