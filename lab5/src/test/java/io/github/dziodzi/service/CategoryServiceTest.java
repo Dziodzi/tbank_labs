@@ -2,12 +2,15 @@ package io.github.dziodzi.service;
 
 import io.github.dziodzi.entity.Category;
 import io.github.dziodzi.entity.dto.CategoryDTO;
+import io.github.dziodzi.exception.NoContentException;
 import io.github.dziodzi.exception.ResourceNotFoundException;
 import io.github.dziodzi.repository.InMemoryStore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -111,5 +114,44 @@ class CategoryServiceTest {
 
         Exception exception = assertThrows(ResourceNotFoundException.class, () -> categoryService.deleteCategory(1));
         assertEquals("Category with id 1 not found", exception.getMessage());
+    }
+
+    @Test
+    void testGetAllCategories_Success() {
+        CategoryDTO dto1 = new CategoryDTO("Slug1", "Name1");
+        CategoryDTO dto2 = new CategoryDTO("Slug2", "Name2");
+
+        when(mockCategoryStore.getAll()).thenReturn(new ConcurrentHashMap<>(Map.of(
+                1, dto1,
+                2, dto2
+        )));
+
+        when(mockCategoryStore.get(1)).thenReturn(dto1);
+        when(mockCategoryStore.get(2)).thenReturn(dto2);
+
+        Collection<Category> categories = categoryService.getAllCategories();
+
+        assertEquals(2, categories.size());
+        verify(mockCategoryStore, times(3)).getAll();
+    }
+
+    @Test
+    void testGetAllCategories_NoContent() {
+        when(mockCategoryStore.getAll()).thenReturn(new ConcurrentHashMap<>());
+
+        Exception exception = assertThrows(NoContentException.class, () -> categoryService.getAllCategories());
+        assertEquals("No categories found", exception.getMessage());
+    }
+
+    @Test
+    void testInitializeCategories_Success() {
+        Collection<Category> categories = new ArrayList<>();
+        categories.add(new Category(1, new CategoryDTO("Slug1", "Name1")));
+        categories.add(new Category(2, new CategoryDTO("Slug2", "Name2")));
+
+        categoryService.initializeCategories(categories);
+
+        verify(mockCategoryStore, times(1)).create(1, new CategoryDTO("Slug1", "Name1"));
+        verify(mockCategoryStore, times(1)).create(2, new CategoryDTO("Slug2", "Name2"));
     }
 }
