@@ -1,0 +1,66 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.3.4'
+    id 'io.spring.dependency-management' version '1.1.6'
+    id 'jacoco'
+}
+
+group = 'io.github.dziodzi'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.mockito:mockito-core:4.11.0'
+    testImplementation 'org.testcontainers:junit-jupiter:1.18.3'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation 'org.slf4j:slf4j-api:2.0.9'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.aspectj:aspectjweaver:1.9.19'
+    implementation 'org.aspectj:aspectjrt:1.9.19'
+    implementation 'com.google.guava:guava:32.0.0-android'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+    implementation 'io.github.resilience4j:resilience4j-spring-boot2:1.7.1'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.mockito:mockito-core:5.2.0'
+    testImplementation 'com.github.tomakehurst:wiremock-jre8:2.35.1'
+}
+
+jacoco {
+    toolVersion = "0.8.12"
+}
+
+tasks.withType(Test).configureEach {
+    jacoco {
+        excludes = ['sun/security/jgss/**']
+    }
+}
+
+tasks.named('jacocoTestReport') {
+    dependsOn test
+    reports {
+        xml.required.set(true)
+        csv.required.set(false)
+        html.required.set(true)
+    }
+    classDirectories.setFrom(
+            files(classDirectories.files.collect {
+                fileTree(dir: it, exclude: ['**/entity/**'])
+                fileTree(dir: it, exclude: ['**/config/**'])
+            })
+    )
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
