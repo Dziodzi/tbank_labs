@@ -3,12 +3,15 @@ package io.github.dziodzi.service;
 import io.github.dziodzi.entity.Location;
 import io.github.dziodzi.entity.dto.LocationDTO;
 import io.github.dziodzi.entity.dto.LocationDTO;
+import io.github.dziodzi.exception.NoContentException;
 import io.github.dziodzi.exception.ResourceNotFoundException;
 import io.github.dziodzi.repository.InMemoryStore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -111,5 +114,44 @@ class LocationServiceTest {
 
         Exception exception = assertThrows(ResourceNotFoundException.class, () -> locationService.deleteLocation("slug"));
         assertEquals("Location with slug slug not found", exception.getMessage());
+    }
+
+    @Test
+    void testGetAllLocations_Success() {
+        LocationDTO dto1 = new LocationDTO("Location 1");
+        LocationDTO dto2 = new LocationDTO("Location 2");
+
+        when(mockLocationStore.getAll()).thenReturn(new ConcurrentHashMap<>(Map.of(
+                "slug1", dto1,
+                "slug2", dto2
+        )));
+
+        when(mockLocationStore.get("slug1")).thenReturn(dto1);
+        when(mockLocationStore.get("slug2")).thenReturn(dto2);
+
+        Collection<Location> locations = locationService.getAllLocations();
+
+        assertEquals(2, locations.size());
+        verify(mockLocationStore, times(3)).getAll();
+    }
+
+    @Test
+    void testGetAllLocations_NoContent() {
+        when(mockLocationStore.getAll()).thenReturn(new ConcurrentHashMap<>());
+
+        Exception exception = assertThrows(NoContentException.class, () -> locationService.getAllLocations());
+        assertEquals("No location found", exception.getMessage());
+    }
+
+    @Test
+    void testInitializeLocations_Success() {
+        Collection<Location> locations = new ArrayList<>();
+        locations.add(new Location("slug1", new LocationDTO("Location 1")));
+        locations.add(new Location("slug2", new LocationDTO("Location 2")));
+
+        locationService.initializeLocations(locations);
+
+        verify(mockLocationStore, times(1)).create("slug1", new LocationDTO("Location 1"));
+        verify(mockLocationStore, times(1)).create("slug2", new LocationDTO("Location 2"));
     }
 }
