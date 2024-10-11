@@ -15,9 +15,7 @@ public class GlobalExceptionHandlerTest {
     @Test
     public void handleCurrencyNotFoundException_ShouldReturnBadRequest() {
         NotFoundException exception = new NotFoundException("Currency not found");
-
         ResponseEntity<ErrorResponse> response = globalExceptionHandler.handleCurrencyNotFoundException(exception);
-
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         ErrorResponse body = response.getBody();
         assertNotNull(body);
@@ -30,9 +28,7 @@ public class GlobalExceptionHandlerTest {
     @Test
     public void handleCurrencyConversionException_ShouldReturnBadRequest() {
         ConvertingException exception = new ConvertingException("Conversion error");
-
         ResponseEntity<ErrorResponse> response = globalExceptionHandler.handleCurrencyConversionException(exception);
-
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         ErrorResponse body = response.getBody();
         assertNotNull(body);
@@ -45,9 +41,7 @@ public class GlobalExceptionHandlerTest {
     @Test
     public void handleServiceUnavailableException_ShouldReturnServiceUnavailable() {
         ServiceUnavailableException exception = new ServiceUnavailableException("Service temporarily unavailable");
-
         ResponseEntity<ErrorResponse> response = globalExceptionHandler.handleServiceUnavailableException(exception);
-
         assertEquals(HttpStatus.SERVICE_UNAVAILABLE, response.getStatusCode());
         ErrorResponse body = response.getBody();
         assertNotNull(body);
@@ -60,9 +54,7 @@ public class GlobalExceptionHandlerTest {
     @Test
     public void handleNullPointerException_ShouldReturnBadRequest() {
         NullPointerException exception = new NullPointerException("Null pointer error");
-
         ResponseEntity<ErrorResponse> response = globalExceptionHandler.handleNullPointerException(exception);
-
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         ErrorResponse body = response.getBody();
         assertNotNull(body);
@@ -75,9 +67,7 @@ public class GlobalExceptionHandlerTest {
     @Test
     public void handleGeneralException_ShouldReturnInternalServerError() {
         Exception exception = new Exception("General error");
-
         ResponseEntity<ErrorResponse> response = globalExceptionHandler.handleGeneralException(exception);
-
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         ErrorResponse body = response.getBody();
         assertNotNull(body);

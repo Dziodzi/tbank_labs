@@ -54,7 +54,6 @@ public class CurrencyControllerTest {
 
     @Test
     public void getCurrencyExchangeRate_NotFound_ShouldReturnBadRequest() throws Exception {
-
         String invalidCode = "INVALID";
         Mockito.when(currencyService.getValueOfCurrencyByCode(invalidCode))
                 .thenThrow(new NotFoundException("Invalid currency code"));

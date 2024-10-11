@@ -52,4 +52,9 @@ public class ApiService {
             throw new Exception("Failed to retrieve currency data");
         }
     }
+
+    public String fallbackFetchCurrencyData(Throwable throwable) {
+        log.warn("Fallback invoked due to: {}", throwable.getMessage());
+        return "Currency data is currently unavailable. Please try again later.";
+    }
 }
