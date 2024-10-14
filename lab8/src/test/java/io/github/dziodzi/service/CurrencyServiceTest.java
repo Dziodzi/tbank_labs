@@ -31,9 +31,9 @@ class CurrencyServiceTest {
 
     @Test
     void getValueOfCurrencyByCode_ValidCode_ReturnsValue() throws Exception {
-        String currencyCode = "EUR"; // Changed to Euro
-        String expectedCurrencyData = "<ValCurs>...</ValCurs>"; // Mocked currency data
-        String expectedValue = "82.5"; // Changed value
+        String currencyCode = "EUR";
+        String expectedCurrencyData = "<ValCurs>...</ValCurs>";
+        String expectedValue = "82.5";
         double expected = 82.5;
 
         when(apiService.fetchCurrencyDataWithCode(currencyCode)).thenReturn(expectedCurrencyData);
@@ -103,7 +103,7 @@ class CurrencyServiceTest {
     @Test
     void convertCurrency_PositiveCase_ShouldCalculateConversionSuccessfully() throws Exception {
         ConvertRequest request = new ConvertRequest("EUR", "GBP", 100.0);
-        String currencyData = "<ValCurs>...</ValCurs>"; // Mocked currency data
+        String currencyData = "<ValCurs>...</ValCurs>";
 
         when(apiService.fetchCurrencyDataWithRequest(request)).thenReturn(currencyData);
         when(parserService.getCurrencyValueByCode("EUR", currencyData)).thenReturn("82.5");
