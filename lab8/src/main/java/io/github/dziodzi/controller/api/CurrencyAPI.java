@@ -27,6 +27,15 @@ public interface CurrencyAPI {
                                     "  \"errorCode\": \"CURRENCY_CONVERSION_ERROR\",\n" +
                                     "  \"status\": 400\n" +
                                     "}"))),
+            @ApiResponse(responseCode = "404", description = "Currency code is not found",
+                    content = @Content(mediaType = "application/json",
+                            examples = @ExampleObject(value = "{\n" +
+                                    "  \"timestamp\": \"2024-10-11T12:06:49.711883629\",\n" +
+                                    "  \"error\": \"Currency Not Found\",\n" +
+                                    "  \"message\": \"Currency not found by code: USDЫ\",\n" +
+                                    "  \"errorCode\": \"CURRENCY_NOT_FOUND\",\n" +
+                                    "  \"status\": 404\n" +
+                                    "}"))),
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(mediaType = "application/json",
                             examples = @ExampleObject(value = "{\n" +
@@ -53,6 +62,15 @@ public interface CurrencyAPI {
                                     "  \"message\": \"Currency not found by code: USDЫ\",\n" +
                                     "  \"errorCode\": \"CURRENCY_CONVERSION_ERROR\",\n" +
                                     "  \"status\": 400\n" +
+                                    "}"))),
+            @ApiResponse(responseCode = "404", description = "Currency code is not found",
+                    content = @Content(mediaType = "application/json",
+                            examples = @ExampleObject(value = "{\n" +
+                                    "  \"timestamp\": \"2024-10-11T12:06:49.711883629\",\n" +
+                                    "  \"error\": \"Currency Not Found\",\n" +
+                                    "  \"message\": \"Currency not found by code: USDЫ\",\n" +
+                                    "  \"errorCode\": \"CURRENCY_NOT_FOUND\",\n" +
+                                    "  \"status\": 404\n" +
                                     "}"))),
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(mediaType = "application/json",

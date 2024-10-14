@@ -2,6 +2,7 @@ package io.github.dziodzi.config;
 
 import com.google.common.cache.CacheBuilder;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
@@ -19,9 +20,12 @@ import java.util.concurrent.TimeUnit;
 @EnableCaching
 public class CacheConfig extends CachingConfigurerSupport {
 
+    @Value("${custom.cache}")
+    private String cacheName;
+
     @Bean
     public CacheManager cacheManager() {
-        return new ConcurrentMapCacheManager("currencyDataCache") {
+        return new ConcurrentMapCacheManager(cacheName) {
             @Override
             protected Cache createConcurrentMapCache(final String name) {
                 return new ConcurrentMapCache(name, CacheBuilder.newBuilder()

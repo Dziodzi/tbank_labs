@@ -13,6 +13,7 @@ custom:
     currency: https://cbr.ru/scripts/XML_daily_eng.asp
   links:
     base-url: http://localhost:8080
+  cache: currencyDataCache
 
 
 resilience4j:

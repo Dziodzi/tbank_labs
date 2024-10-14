@@ -40,7 +40,7 @@ public class GlobalExceptionHandler {
                 "Currency Not Found",
                 e.getLocalizedMessage(),
                 "CURRENCY_NOT_FOUND",
-                HttpStatus.BAD_REQUEST.value()
+                HttpStatus.NOT_FOUND.value()
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
