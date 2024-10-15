@@ -12,9 +12,9 @@ import jakarta.validation.constraints.Size;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 public interface EventAPI {
     
@@ -42,7 +42,7 @@ public interface EventAPI {
                                     "}")))
     })
     @GetMapping("/events")
-    CompletableFuture<ResponseEntity<List<Event>>> getEvents(
+    Mono<ResponseEntity<List<Event>>> getEvents(
             @Parameter(description = "Budget to filter events")
             @RequestParam @Min(0) double budget,
             @Parameter(description = "Currency code (e.g., USD, EUR)", example = "USD")

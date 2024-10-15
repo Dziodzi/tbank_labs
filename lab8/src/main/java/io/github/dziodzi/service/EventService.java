@@ -8,11 +8,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,33 +33,33 @@ public class EventService {
     
     private static final Pattern PRICE_PATTERN = Pattern.compile("\\d+");
     
-    public CompletableFuture<List<Event>> getFilteredEvents(double budget, String currency, Long dateFrom, Long dateTo) {
+    public Mono<List<Event>> getFilteredEvents(double budget, String currency, Long dateFrom, Long dateTo) {
         if (dateFrom == null && dateTo == null) {
             LocalDate nowLocalDate = LocalDate.now();
             LocalDate oneWeekAgo = nowLocalDate.minusDays(7);
-            dateFrom = Long.valueOf(oneWeekAgo.atStartOfDay(ZoneId.of("UTC"))
-                    .toInstant()
-                    .getEpochSecond());
-            dateTo = Long.valueOf(nowLocalDate.atStartOfDay(ZoneId.of("UTC"))
-                    .toInstant()
-                    .getEpochSecond());
+            dateFrom = oneWeekAgo.atStartOfDay(ZoneId.of("UTC")).toInstant().getEpochSecond();
+            dateTo = nowLocalDate.atStartOfDay(ZoneId.of("UTC")).toInstant().getEpochSecond();
         }
         
-        CompletableFuture<List<Event>> eventsFuture = getEvents(dateFrom, dateTo);
-        CompletableFuture<Double> convertedBudgetFuture = CompletableFuture.supplyAsync(() ->
+        Mono<List<Event>> eventsMono = getEvents(dateFrom, dateTo);
+        Mono<Double> convertedBudgetMono = Mono.fromCallable(() ->
                 currencyService.getValueOfCurrencyByCode(currency) * budget);
         
-        return eventsFuture.thenCombine(convertedBudgetFuture, (events, convertedBudget) -> {
-            for (Event event : events) {
-                event.setParsedPrice(parsePrice(event.getPrice(), event.isFree()));
-            }
-            return filterEventsByBudget(events, convertedBudget);
-        });
+        return Mono.zip(eventsMono, convertedBudgetMono)
+                .flatMap(tuple -> {
+                    List<Event> events = tuple.getT1();
+                    double convertedBudget = tuple.getT2();
+                    
+                    events.forEach(event ->
+                            event.setParsedPrice(parsePrice(event.getPrice(), event.isFree()))
+                    );
+                    
+                    return Mono.just(filterEventsByBudget(events, convertedBudget));
+                });
     }
-
     
-    public CompletableFuture<List<Event>> getEvents(Long dateFrom, Long dateTo) {
-        return CompletableFuture.supplyAsync(() -> {
+    public Mono<List<Event>> getEvents(Long dateFrom, Long dateTo) {
+        return Mono.fromCallable(() -> {
             StringBuilder urlBuilder = new StringBuilder(String.format("%s%s", eventApiUrl, urlFilter));
             
             if (dateFrom != null) {

@@ -7,9 +7,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,10 +19,10 @@ public class EventController implements EventAPI {
     private final EventService eventService;
     
     @Override
-    public CompletableFuture<ResponseEntity<List<Event>>> getEvents(
+    public Mono<ResponseEntity<List<Event>>> getEvents(
             double budget, String currency, Long dateFrom, Long dateTo) {
         
         return eventService.getFilteredEvents(budget, currency, dateFrom, dateTo)
-                .thenApply(ResponseEntity::ok);
+                .map(ResponseEntity::ok);
     }
 }
