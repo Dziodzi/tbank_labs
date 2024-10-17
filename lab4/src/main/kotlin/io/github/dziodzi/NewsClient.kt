@@ -11,8 +11,11 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 import kotlinx.serialization.json.Json
 import org.slf4j.LoggerFactory
+import kotlin.coroutines.CoroutineContext
 
 class ServerRequestException(message: String) : Exception(message)
 
@@ -74,7 +77,7 @@ suspend fun getNews(count: Int = Config.NEWS_COUNT): List<News> {
     }
 }
 
-suspend fun getNewsParallel(targetCount: Int): List<News> = coroutineScope {
+suspend fun getNewsParallel(targetCount: Int, dispatcher: CoroutineContext): List<News> = coroutineScope {
     val newsList = mutableListOf<News>()
     val jobs = mutableListOf<Deferred<List<News>>>()
 
@@ -83,15 +86,17 @@ suspend fun getNewsParallel(targetCount: Int): List<News> = coroutineScope {
             break
         }
 
-        val job = async {
-            val pageNews = fetchNews(pageNumber)
-            log.info("Worker ${pageNumber % Config.THREAD_POOL_SIZE} fetched ${pageNews.size} articles from page $pageNumber. Total news: ${newsList.size}")
-            newsList.addAll(pageNews)
-            pageNews
+        val job = async(dispatcher) {
+            Semaphore(Config.MAX_PARALLEL_REQUESTS).withPermit {
+                val pageNews = fetchNews(pageNumber)
+                log.info("Worker ${pageNumber % Config.THREAD_POOL_SIZE} fetched ${pageNews.size} articles from page $pageNumber. Total news: ${newsList.size}")
+                newsList.addAll(pageNews)
+                pageNews
+            }
         }
         jobs.add(job)
 
-        if (jobs.size >= Config.THREAD_POOL_SIZE) {
+        if (jobs.size >= Config.MAX_PARALLEL_REQUESTS) {
             jobs.awaitAll()
             jobs.clear()
         }
