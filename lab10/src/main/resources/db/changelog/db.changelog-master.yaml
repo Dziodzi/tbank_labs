@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/2024_10_22_V1_init_table_places.yml
+  - include:
+      file: db/changelog/2024_10_22_V1_init_table_events.yml
