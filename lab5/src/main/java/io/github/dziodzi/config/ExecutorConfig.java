@@ -12,10 +12,10 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 @Configuration
 @EnableScheduling
 public class ExecutorConfig {
-
-    @Value("${custom.thread.pool.size}")
+    
+    @Value("2")
     private int fixedThreadPoolSize;
-
+    
     @Bean
     public ExecutorService fixedThreadPool() {
         return Executors.newFixedThreadPool(fixedThreadPoolSize, runnable -> {
@@ -24,9 +24,14 @@ public class ExecutorConfig {
             return thread;
         });
     }
-
+    
     @Bean
     public ScheduledThreadPoolExecutor scheduledThreadPool() {
-        return (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(1);
+        ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(2, runnable -> {
+            Thread thread = Executors.defaultThreadFactory().newThread(runnable);
+            thread.setName("STP-" + thread.getId());
+            return thread;
+        });
+        return executor;
     }
 }

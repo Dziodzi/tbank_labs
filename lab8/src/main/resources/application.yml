@@ -36,3 +36,12 @@ resilience4j:
       myCircuitBreaker2:
         baseConfig: default
         waitDurationInOpenState: 30s
+
+resilience4j.ratelimiter:
+  configs:
+    default:
+      limitForPeriod: 5
+      limitRefreshPeriod: 1s
+  instances:
+    eventServiceLimiter:
+      baseConfig: default

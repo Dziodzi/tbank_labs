@@ -3,6 +3,7 @@ package io.github.dziodzi.service;
 import io.github.dziodzi.entity.Event;
 import io.github.dziodzi.entity.EventResponse;
 import io.github.dziodzi.tools.LogExecutionTime;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -58,6 +59,7 @@ public class EventService {
                 });
     }
     
+    @RateLimiter(name = "eventServiceLimiter")
     public Mono<List<Event>> getEvents(Long dateFrom, Long dateTo) {
         return Mono.fromCallable(() -> {
             StringBuilder urlBuilder = new StringBuilder(String.format("%s%s", eventApiUrl, urlFilter));

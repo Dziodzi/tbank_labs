@@ -1,10 +1,7 @@
 import io.github.dziodzi.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.sync.Semaphore
-import kotlinx.coroutines.sync.withPermit
 import org.slf4j.LoggerFactory
 import java.util.concurrent.Executors
-import kotlin.coroutines.CoroutineContext
 
 private val log = LoggerFactory.getLogger("ParallelFetcherLogger")
 

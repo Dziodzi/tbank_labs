@@ -3,6 +3,7 @@ package io.github.dziodzi.service;
 import io.github.dziodzi.entity.Category;
 import io.github.dziodzi.entity.Location;
 import io.github.dziodzi.tools.LogExecutionTime;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -16,23 +17,24 @@ import java.util.List;
 @Component
 @LogExecutionTime
 public class APIClient {
-
+    
     private final RestTemplate restTemplate;
     private final String categoriesUrl;
     private final String locationsUrl;
-
-     public APIClient(RestTemplate restTemplate,
+    
+    public APIClient(RestTemplate restTemplate,
                      @Value("${custom.api.categories-url}") String categoriesUrl,
                      @Value("${custom.api.locations-url}") String locationsUrl) {
-       
+        
         this.restTemplate = restTemplate;
         this.categoriesUrl = categoriesUrl;
         this.locationsUrl = locationsUrl;
-
+        
         log.info("Categories URL: {}", categoriesUrl);
         log.info("Locations URL: {}", locationsUrl);
     }
-
+    
+    @RateLimiter(name = "apiClientRateLimiter", fallbackMethod = "fetchCategoriesFallback")
     public List<Category> fetchCategories() {
         log.info("Fetching categories from URL: {}", categoriesUrl);
         try {
@@ -46,7 +48,8 @@ public class APIClient {
             throw new RuntimeException("Failed to fetch categories", e);
         }
     }
-
+    
+    @RateLimiter(name = "apiClientRateLimiter", fallbackMethod = "fetchLocationsFallback")
     public List<Location> fetchLocations() {
         log.info("Fetching locations from URL: {}", locationsUrl);
         try {
@@ -59,5 +62,15 @@ public class APIClient {
             log.error("Failed to fetch locations", e);
             throw new RuntimeException("Failed to fetch locations", e);
         }
+    }
+    
+    public List<Category> fetchCategoriesFallback(Throwable t) {
+        log.warn("Rate limit exceeded for fetchCategories, returning empty list as fallback", t);
+        return new ArrayList<>();
+    }
+    
+    public List<Location> fetchLocationsFallback(Throwable t) {
+        log.warn("Rate limit exceeded for fetchLocations, returning empty list as fallback", t);
+        return new ArrayList<>();
     }
 }

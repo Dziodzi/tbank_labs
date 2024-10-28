@@ -7,9 +7,9 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
-import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
@@ -77,31 +77,41 @@ suspend fun getNews(count: Int = Config.NEWS_COUNT): List<News> {
     }
 }
 
+sealed class NewsMessage
+data class AddNews(val news: List<News>) : NewsMessage()
+class GetNews(val response: CompletableDeferred<List<News>>) : NewsMessage()
+
 suspend fun getNewsParallel(targetCount: Int, dispatcher: CoroutineContext): List<News> = coroutineScope {
-    val newsList = mutableListOf<News>()
-    val jobs = mutableListOf<Deferred<List<News>>>()
+    val semaphore = Semaphore(Config.MAX_PARALLEL_REQUESTS)
 
-    for (pageNumber in 1..Int.MAX_VALUE) {
-        if (newsList.size >= targetCount) {
-            break
-        }
+    val newsActor = actor<NewsMessage>(dispatcher) {
+        val newsList = mutableListOf<News>()
 
-        val job = async(dispatcher) {
-            Semaphore(Config.MAX_PARALLEL_REQUESTS).withPermit {
-                val pageNews = fetchNews(pageNumber)
-                log.info("Worker ${pageNumber % Config.THREAD_POOL_SIZE} fetched ${pageNews.size} articles from page $pageNumber. Total news: ${newsList.size}")
-                newsList.addAll(pageNews)
-                pageNews
+        for (msg in channel) {
+            when (msg) {
+                is AddNews -> newsList.addAll(msg.news)
+                is GetNews -> msg.response.complete(newsList.take(targetCount))
             }
-        }
-        jobs.add(job)
-
-        if (jobs.size >= Config.MAX_PARALLEL_REQUESTS) {
-            jobs.awaitAll()
-            jobs.clear()
         }
     }
 
-    jobs.awaitAll()
-    return@coroutineScope newsList.take(targetCount)
+    val jobs = (1..Int.MAX_VALUE).map { pageNumber ->
+        async(dispatcher) {
+            semaphore.withPermit {
+                val pageNews = fetchNews(pageNumber)
+                if (pageNews.isNotEmpty()) {
+                    log.info("Fetched ${pageNews.size} news from page $pageNumber")
+                    newsActor.send(AddNews(pageNews))
+                }
+            }
+        }
+    }
+
+    jobs.take(targetCount / Config.PAGE_SIZE + 1).forEach { it.await() }
+
+    val response = CompletableDeferred<List<News>>()
+    newsActor.send(GetNews(response))
+    newsActor.close()
+
+    return@coroutineScope response.await()
 }

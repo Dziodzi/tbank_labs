@@ -13,6 +13,12 @@ custom:
       size: 1
   initialization:
     schedule: PT10S
+resilience4j.ratelimiter:
+  instances:
+    apiClientRateLimiter:
+      limit-for-period: 5
+      limit-refresh-period: 1s
+      timeout-duration: 0
 
 # 1 Data initialization completed in 1066 ms
 # 2 Data initialization completed in 1056 ms.
