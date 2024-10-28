@@ -17,6 +17,9 @@ custom:
   cache: currencyDataCache
   filters:
     events: "?fields=id,title,price&order_by=-price&text_format=plain"
+  executor:
+    thread-pool-size: 10
+
 
 resilience4j:
   circuitbreaker:
