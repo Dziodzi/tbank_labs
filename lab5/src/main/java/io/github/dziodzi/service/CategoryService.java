@@ -5,6 +5,7 @@ import io.github.dziodzi.entity.dto.CategoryDTO;
 import io.github.dziodzi.exception.NoContentException;
 import io.github.dziodzi.exception.ResourceNotFoundException;
 import io.github.dziodzi.repository.InMemoryStore;
+import io.github.dziodzi.service.observer.Publisher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ import java.util.Collection;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class CategoryService {
+public class CategoryService extends Publisher {
 
     private final InMemoryStore<Integer, CategoryDTO> categoryStore;
 
@@ -43,6 +44,9 @@ public class CategoryService {
             throw new IllegalArgumentException("Category with id " + category.getId() + " already exists");
         }
         categoryStore.create(category.getId(), category.toDTO());
+        
+        notifySubscribers("Category created: " + category.getId());
+        
         return category;
     }
 
@@ -54,6 +58,9 @@ public class CategoryService {
         categoryStore.update(id, categoryDTO);
 
         categoryStore.createSnapshot(id, currentCategoryDTO);
+        
+        notifySubscribers("Category updated: " + id);
+        
         return getCategoryById(id);
     }
 
@@ -63,6 +70,8 @@ public class CategoryService {
             throw new ResourceNotFoundException("Category with id " + id + " not found");
         }
         categoryStore.delete(id);
+        
+        notifySubscribers("Category deleted: " + id);
     }
 
     public void initializeCategories(Collection<Category> categories) {

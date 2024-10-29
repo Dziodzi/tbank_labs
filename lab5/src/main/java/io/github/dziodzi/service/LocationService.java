@@ -5,6 +5,7 @@ import io.github.dziodzi.entity.dto.LocationDTO;
 import io.github.dziodzi.exception.NoContentException;
 import io.github.dziodzi.exception.ResourceNotFoundException;
 import io.github.dziodzi.repository.InMemoryStore;
+import io.github.dziodzi.service.observer.Publisher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ import java.util.Collection;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class LocationService {
+public class LocationService extends Publisher {
 
     private final InMemoryStore<String, LocationDTO> locationStore;
 
@@ -43,6 +44,9 @@ public class LocationService {
             throw new IllegalArgumentException("Location with slug " + location.getSlug() + " already exists");
         }
         locationStore.create(location.getSlug(), location.toDTO());
+        
+        notifySubscribers("Location created: " + location.getSlug());
+        
         return location;
     }
 
@@ -54,6 +58,9 @@ public class LocationService {
         locationStore.update(key, locationDTO);
 
         locationStore.createSnapshot(key, currentLocationDTO);
+        
+        notifySubscribers("Location updated: " + key);
+        
         return getLocationBySlug(key);
     }
 
@@ -63,6 +70,8 @@ public class LocationService {
             throw new ResourceNotFoundException("Location with slug " + key + " not found");
         }
         locationStore.delete(key);
+        
+        notifySubscribers("Location deleted: " + key);
     }
 
     public void initializeLocations(Collection<Location> locations) {
