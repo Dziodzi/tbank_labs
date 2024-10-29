@@ -53,4 +53,13 @@ public interface CategoryApi {
     })
     @DeleteMapping("/{id}")
     ResponseEntity<Void> deleteCategory(@Parameter(description = "ID of the category to be deleted") @PathVariable int id);
+    
+    @Operation(summary = "Get all snapshots for a category", description = "Returns a list of all snapshots for a category.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved snapshots"),
+            @ApiResponse(responseCode = "404", description = "Category not found")
+    })
+    @GetMapping("/{id}/snapshots")
+    ResponseEntity<Collection<CategoryDTO>> getCategorySnapshots(
+            @Parameter(description = "ID of the category to retrieve snapshots") @PathVariable int id);
 }

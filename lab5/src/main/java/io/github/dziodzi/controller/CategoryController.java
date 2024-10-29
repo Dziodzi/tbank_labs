@@ -41,4 +41,9 @@ public class CategoryController implements CategoryApi {
         categoryService.deleteCategory(id);
         return ResponseEntity.noContent().build();
     }
+    
+    @Override
+    public ResponseEntity<Collection<CategoryDTO>> getCategorySnapshots(int id) {
+        return ResponseEntity.ok(categoryService.getCategorySnapshots(id));
+    }
 }

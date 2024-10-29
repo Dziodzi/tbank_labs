@@ -5,7 +5,6 @@ import io.github.dziodzi.entity.dto.LocationDTO;
 import io.github.dziodzi.exception.NoContentException;
 import io.github.dziodzi.exception.ResourceNotFoundException;
 import io.github.dziodzi.repository.InMemoryStore;
-import io.github.dziodzi.tools.LogExecutionTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -51,9 +50,13 @@ public class LocationService {
         if (locationStore.get(key) == null) {
             throw new ResourceNotFoundException("Location with slug " + key + " not found");
         }
+        LocationDTO currentLocationDTO = locationStore.get(key);
         locationStore.update(key, locationDTO);
+
+        locationStore.createSnapshot(key, currentLocationDTO);
         return getLocationBySlug(key);
     }
+
 
     public void deleteLocation(String key) {
         if (locationStore.get(key) == null) {
@@ -66,5 +69,12 @@ public class LocationService {
         for (Location location : locations) {
             locationStore.create(location.getSlug(), location.toDTO());
         }
+    }
+    
+    public Collection<LocationDTO> getLocationSnapshots(String key) {
+        if (!locationStore.getAll().containsKey(key)) {
+            throw new ResourceNotFoundException("Location with slug " + key + " not found");
+        }
+        return new ArrayList<>(locationStore.getSnapshots(key).values());
     }
 }

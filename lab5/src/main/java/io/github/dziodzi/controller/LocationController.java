@@ -41,4 +41,9 @@ public class LocationController implements LocationApi {
         locationService.deleteLocation(slug);
         return ResponseEntity.noContent().build();
     }
+    
+    @Override
+    public ResponseEntity<Collection<LocationDTO>> getLocationSnapshots(String slug) {
+        return ResponseEntity.ok(locationService.getLocationSnapshots(slug));
+    }
 }

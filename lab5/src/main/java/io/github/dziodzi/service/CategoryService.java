@@ -5,7 +5,6 @@ import io.github.dziodzi.entity.dto.CategoryDTO;
 import io.github.dziodzi.exception.NoContentException;
 import io.github.dziodzi.exception.ResourceNotFoundException;
 import io.github.dziodzi.repository.InMemoryStore;
-import io.github.dziodzi.tools.LogExecutionTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -51,9 +50,13 @@ public class CategoryService {
         if (!categoryStore.getAll().containsKey(id)) {
             throw new ResourceNotFoundException("Category with id " + id + " not found");
         }
+        CategoryDTO currentCategoryDTO = categoryStore.get(id);
         categoryStore.update(id, categoryDTO);
+
+        categoryStore.createSnapshot(id, currentCategoryDTO);
         return getCategoryById(id);
     }
+
 
     public void deleteCategory(int id) {
         if (!categoryStore.getAll().containsKey(id)) {
@@ -66,5 +69,12 @@ public class CategoryService {
         for (Category category : categories) {
             categoryStore.create(category.getId(), category.toDTO());
         }
+    }
+    
+    public Collection<CategoryDTO> getCategorySnapshots(int id) {
+        if (!categoryStore.getAll().containsKey(id)) {
+            throw new ResourceNotFoundException("Category with id " + id + " not found");
+        }
+        return new ArrayList<>(categoryStore.getSnapshots(id).values());
     }
 }

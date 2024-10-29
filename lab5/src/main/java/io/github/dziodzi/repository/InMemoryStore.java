@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class InMemoryStore<K, T> {
     private final ConcurrentHashMap<K, T> store = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<K, ConcurrentHashMap<Long, T>> snapshotStore = new ConcurrentHashMap<>();
 
     public ConcurrentHashMap<K, T> getAll() {
         return store;
@@ -25,10 +26,22 @@ public class InMemoryStore<K, T> {
 
     public void update(K key, T entity) {
         store.put(key, entity);
+        createSnapshot(key, entity);
     }
 
     public void delete(K key) {
         store.remove(key);
+        snapshotStore.remove(key);
+    }
+
+    public void createSnapshot(K key, T entity) {
+        long timestamp = System.currentTimeMillis();
+        snapshotStore.putIfAbsent(key, new ConcurrentHashMap<>());
+        snapshotStore.get(key).put(timestamp, entity);
+    }
+    
+    public ConcurrentHashMap<Long, T> getSnapshots(K key) {
+        return snapshotStore.get(key);
     }
 
     @Configuration
