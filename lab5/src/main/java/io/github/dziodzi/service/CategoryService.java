@@ -65,7 +65,7 @@ public class CategoryService {
         categoryStore.delete(id);
     }
 
-    protected void initializeCategories(Collection<Category> categories) {
+    public void initializeCategories(Collection<Category> categories) {
         for (Category category : categories) {
             categoryStore.create(category.getId(), category.toDTO());
         }

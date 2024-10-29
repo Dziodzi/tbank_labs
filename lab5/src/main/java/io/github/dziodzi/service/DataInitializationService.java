@@ -1,7 +1,8 @@
 package io.github.dziodzi.service;
 
-import io.github.dziodzi.entity.Category;
-import io.github.dziodzi.entity.Location;
+import io.github.dziodzi.service.command.CommandExecutor;
+import io.github.dziodzi.command.InitializeCategoriesCommand;
+import io.github.dziodzi.command.InitializeLocationsCommand;
 import io.github.dziodzi.tools.LogExecutionTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,12 +13,11 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.*;
 
 @Slf4j
 @Service
+@LogExecutionTime
 @RequiredArgsConstructor
 public class DataInitializationService implements ApplicationListener<ApplicationStartedEvent> {
 
@@ -31,6 +31,9 @@ public class DataInitializationService implements ApplicationListener<Applicatio
     @Autowired
     private ScheduledThreadPoolExecutor scheduledThreadPool;
 
+    @Autowired
+    private final CommandExecutor commandExecutor;
+    
     @Value("${custom.initialization.schedule}")
     private Duration initializationSchedule;
 
@@ -41,37 +44,15 @@ public class DataInitializationService implements ApplicationListener<Applicatio
     }
 
     public void initializeData() {
-        long startTime = System.currentTimeMillis();
+        commandExecutor.addCommand(new InitializeCategoriesCommand(categoryService, apiClient));
+        commandExecutor.addCommand(new InitializeLocationsCommand(locationService, apiClient));
 
         try {
-            List<Future<?>> futures = new ArrayList<>();
-
-            futures.add(fixedThreadPool.submit(() -> {
-                log.info("-> Categories initialization started.");
-                List<Category> categories = apiClient.fetchCategories();
-                categoryService.initializeCategories(categories);
-                log.info("--> Categories initialization finished.");
-            }));
-
-            futures.add(fixedThreadPool.submit(() -> {
-                log.info("-> Locations initialization started.");
-                List<Location> locations = apiClient.fetchLocations();
-                locationService.initializeLocations(locations);
-                log.info("--> Locations initialization finished.");
-            }));
-
-            for (Future<?> future : futures) {
-                try {
-                    future.get();
-                } catch (ExecutionException e) {
-                    log.error("Failed to initialize data", e);
-                }
-            }
+            fixedThreadPool.submit(commandExecutor::executeCommands).get();
         } catch (Exception e) {
             log.error("Failed to initialize data", e);
         } finally {
-            long endTime = System.currentTimeMillis();
-            log.info("Data initialization completed in {} ms.", (endTime - startTime));
+            commandExecutor.clearCommands();
         }
     }
 

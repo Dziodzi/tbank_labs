@@ -65,7 +65,7 @@ public class LocationService {
         locationStore.delete(key);
     }
 
-    protected void initializeLocations(Collection<Location> locations) {
+    public void initializeLocations(Collection<Location> locations) {
         for (Location location : locations) {
             locationStore.create(location.getSlug(), location.toDTO());
         }
