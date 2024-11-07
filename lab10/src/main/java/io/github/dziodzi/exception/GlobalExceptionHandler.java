@@ -1,7 +1,7 @@
 package io.github.dziodzi.exception;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import io.github.dziodzi.entity.ErrorResponse;
+import io.github.dziodzi.entity.exchange.ErrorResponse;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -68,7 +68,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleAlreadyExistsException(AlreadyExistsException e) {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, e.getLocalizedMessage());
     }
-    
+
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<ErrorResponse> handleAuthException(AuthException e) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, e.getLocalizedMessage());
+    }
+
+
     private ResponseEntity<ErrorResponse> buildErrorResponse(HttpStatus status, String message) {
         ErrorResponse errorResponse = new ErrorResponse(
                 status.value(),

@@ -6,6 +6,7 @@ import io.github.dziodzi.exception.InvalidBodyException;
 import io.github.dziodzi.exception.NotFoundException;
 import io.github.dziodzi.repository.PlaceRepository;
 import io.github.dziodzi.service.interfaces.PlaceService;
+import io.github.dziodzi.tools.LogExecutionTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@LogExecutionTime
 public class PlaceServiceImpl implements PlaceService {
     
     private final PlaceRepository placeRepository;
