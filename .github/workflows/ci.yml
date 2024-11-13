@@ -1,17 +1,110 @@
 name: CI Workflow
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - fj_2024_lesson_14
-  pull_request:
-    branches:
-      - fj_2024_lesson_14
+    paths:
+      - .github/workflows/ci.yml
+
+permissions:
+  packages: write
+  pull-requests: write
 
 jobs:
   build:
+    permissions:
+      packages: write
+      pull-requests: write
     runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - name: Build with Gradle
+        run: ./gradlew clean build --refresh-dependencies
+
+  test:
+    runs-on: ubuntu-latest
+    needs: [build, coverage_report]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - name: Run tests
+        run: ./gradlew test
+
+  static_analysis:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - name: Run static code analysis
+        run: ./gradlew check
+
+  docker:
+    permissions:
+      packages: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    needs: static_analysis
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -22,36 +115,60 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Cache Gradle dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', 'lab8/**/*.gradle*') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
 
       - name: Build with Gradle
-        working-directory: ./lab8
-        run: ../gradlew build
-
-      - name: Run tests and calculate coverage
-        working-directory: ./lab8
-        run: ../gradlew test jacocoTestReport
-
-      - name: Run Checkstyle
-        working-directory: ./lab8
-        run: ../gradlew checkstyleMain checkstyleTest
+        run: ./gradlew clean build --refresh-dependencies
 
       - name: Build Docker image
-        run: docker build -t io.github.dziodzi/lab8:latest -f docker/Dockerfile .
-
-      - name: Log in to GitHub Docker registry
+        run: |
+          docker build -t ghcr.io/dziodzi/tbank-labs:latest .  # Tag for GitHub Container Registry
+      - name: Log in to GitHub Container Registry
         uses: docker/login-action@v2
         with:
+          registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.CR_PAT }}
 
-      - name: Push Docker image to GitHub Packages
+      - name: Push Docker image to GitHub Container Registry
+        run: docker push ghcr.io/dziodzi/tbank-labs:latest
+
+  coverage_report:
+    permissions:
+      packages: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Run Coverage
         run: |
-          docker tag io.github.dziodzi/lab8:latest ghcr.io/${{ github.repository }}/lab8:latest
-          docker push ghcr.io/${{ github.repository }}/lab8:latest
+          chmod +x gradlew
+          ./gradlew jacocoTestReport
+      - name: Check if Jacoco report exists
+        run: |
+          ls -R build/reports/jacoco
+      - name: Upload Jacoco Coverage Report
+        uses: madrapps/jacoco-report@v1.7.1
+        with:
+          paths: ${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          min-coverage-overall: 75
+          min-coverage-changed-files: 30
+          title: Code Coverage
+          update-comment: true
+
+      - name: Print full event payload for debugging
+        run: echo "${{ toJson(github.event) }}"
+
+      - name: Log event type
+        run: echo  "${{ github.event_name }}"
