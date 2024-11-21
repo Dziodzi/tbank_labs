@@ -1,0 +1,42 @@
+Benchmark, Mode, Throughput (ops/s), Latency (ms), Consumer Processing Time (ms)
+testKafkaProducerConsumer, AverageTime, 2150906,25, 40323026500,00, 240901500,00
+testRabbitMQProducerConsumer, AverageTime, 0,00, 0,00, 0,00
+Benchmark, Mode, Throughput (ops/s), Latency (ms), Consumer Processing Time (ms)
+testKafkaProducerConsumer, AverageTime, 0,00, 0,00, 0,00
+testRabbitMQProducerConsumer, AverageTime, 25180413000,00, 15111863100,00, 25180413000,00
+Benchmark, Mode, Throughput (ops/s), Latency (ms), Consumer Processing Time (ms)
+testKafkaProducerConsumer, AverageTime, 2122812,50, 40404042000,00, 237755000,00
+testRabbitMQProducerConsumer, AverageTime, 0,00, 0,00, 0,00
+Benchmark, Mode, Throughput (ops/s), Latency (ms), Consumer Processing Time (ms)
+testKafkaProducerConsumer, AverageTime, 0,00, 0,00, 0,00
+testRabbitMQProducerConsumer, AverageTime, 24965133100,00, 15427336200,00, 24965133100,00
+Benchmark, Mode, Throughput (ops/s), Latency (ms), Consumer Processing Time (ms)
+testKafkaProducerConsumer, AverageTime, 2323747,32, 100888388900,00, 260259700,00
+testRabbitMQProducerConsumer, AverageTime, 0,00, 0,00, 0,00
+Benchmark, Mode, Throughput (ops/s), Latency (ms), Consumer Processing Time (ms)
+testKafkaProducerConsumer, AverageTime, 2286172,32, 100921222000,00, 256051300,00
+testRabbitMQProducerConsumer, AverageTime, 0,00, 0,00, 0,00
+Benchmark, Mode, Throughput (ops/s), Latency (ms), Consumer Processing Time (ms)
+testKafkaProducerConsumer, AverageTime, 2271869,64, 101008957500,00, 254449400,00
+testRabbitMQProducerConsumer, AverageTime, 0,00, 0,00, 0,00
+Benchmark, Mode, Throughput (ops/s), Latency (ms), Consumer Processing Time (ms)
+testKafkaProducerConsumer, AverageTime, 2342593,75, 100940536200,00, 262370500,00
+testRabbitMQProducerConsumer, AverageTime, 0,00, 0,00, 0,00
+Benchmark, Mode, Throughput (ops/s), Latency (ms), Consumer Processing Time (ms)
+testKafkaProducerConsumer, AverageTime, 2332378,57, 100891451000,00, 261226400,00
+testRabbitMQProducerConsumer, AverageTime, 0,00, 0,00, 0,00
+Benchmark, Mode, Throughput (ops/s), Latency (ms), Consumer Processing Time (ms)
+testKafkaProducerConsumer, AverageTime, 0,00, 0,00, 0,00
+testRabbitMQProducerConsumer, AverageTime, 62572446200,00, 38331552900,00, 62572446200,00
+Benchmark, Mode, Throughput (ops/s), Latency (ms), Consumer Processing Time (ms)
+testKafkaProducerConsumer, AverageTime, 0,00, 0,00, 0,00
+testRabbitMQProducerConsumer, AverageTime, 61195910700,00, 39334703700,00, 61195910700,00
+Benchmark, Mode, Throughput (ops/s), Latency (ms), Consumer Processing Time (ms)
+testKafkaProducerConsumer, AverageTime, 0,00, 0,00, 0,00
+testRabbitMQProducerConsumer, AverageTime, 62153482200,00, 38568505100,00, 62153482200,00
+Benchmark, Mode, Throughput (ops/s), Latency (ms), Consumer Processing Time (ms)
+testKafkaProducerConsumer, AverageTime, 0,00, 0,00, 0,00
+testRabbitMQProducerConsumer, AverageTime, 62284722300,00, 38602884500,00, 62284722300,00
+Benchmark, Mode, Throughput (ops/s), Latency (ms), Consumer Processing Time (ms)
+testKafkaProducerConsumer, AverageTime, 0,00, 0,00, 0,00
+testRabbitMQProducerConsumer, AverageTime, 62606664700,00, 38285830000,00, 62606664700,00
