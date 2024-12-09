@@ -13,29 +13,29 @@ import java.util.Collection;
 @RestController
 @RequiredArgsConstructor
 public class CategoryController implements CategoryApi {
-
+    
     private final CategoryService categoryService;
-
+    
     @Override
     public ResponseEntity<Collection<Category>> getAllCategories() {
         return ResponseEntity.ok(categoryService.getAllCategories());
     }
-
+    
     @Override
     public ResponseEntity<Category> getCategoryById(int id) {
         return ResponseEntity.ok(categoryService.getCategoryById(id));
     }
-
+    
     @Override
     public ResponseEntity<Category> createCategory(Category category) {
         return ResponseEntity.status(201).body(categoryService.createCategory(category));
     }
-
+    
     @Override
     public ResponseEntity<Category> updateCategory(int id, CategoryDTO categoryDTO) {
         return ResponseEntity.ok(categoryService.updateCategory(id, categoryDTO));
     }
-
+    
     @Override
     public ResponseEntity<Void> deleteCategory(int id) {
         categoryService.deleteCategory(id);
