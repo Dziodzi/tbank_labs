@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: lab8_app
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+
+custom:
+  api:
+    currency: https://cbr.ru/scripts/XML_daily_eng.asp
+    events: https://kudago.com/public-api/v1.4/events/
+  links:
+    base-url: http://localhost:8080
+  cache: currencyDataCache
+  filters:
+    events: "?fields=id,title,price&order_by=-price&text_format=plain"
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowSize: 100
+        permittedNumberOfCallsInHalfOpenState: 10
+        slowCallDurationThreshold: 4s
+        slowCallRateThreshold: 90
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        minimumNumberOfCalls: 10
+    instances:
+      myCircuitBreaker:
+        baseConfig: default
+        waitDurationInOpenState: 20s
+      myCircuitBreaker2:
+        baseConfig: default
+        waitDurationInOpenState: 30s
