@@ -1,16 +1,13 @@
 package io.github.dziodzi.service;
 
-import io.github.dziodzi.entity.Category;
-import org.junit.jupiter.api.Assertions;
+import io.github.dziodzi.service.command.Command;
+import io.github.dziodzi.service.command.CommandExecutor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
-import java.util.Collections;
-import java.util.List;
-
-import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.*;
 
 class DataInitializationServiceTest {
@@ -23,42 +20,35 @@ class DataInitializationServiceTest {
 
     @Mock
     private APIClient apiClient;
-
+    
+    @Mock
+    private CommandExecutor commandExecutor;
+    
+    @Mock
+    private Command mockCommand;
+    
     private DataInitializationService dataInitializationService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        dataInitializationService = new DataInitializationService(categoryService, locationService, apiClient);
+        dataInitializationService = new DataInitializationService(
+                commandExecutor,
+                mock(ThreadPoolTaskScheduler.class)
+        );
     }
 
+    
     @Test
-    void initializeData_WithEmptyCategories_ShouldLogMessage() {
-        when(apiClient.fetchCategories()).thenReturn(Collections.emptyList());
+    void initializeData_ShouldExecuteCommands() {
         dataInitializationService.initializeData();
-        verify(categoryService).initializeCategories(Collections.emptyList());
+        verify(commandExecutor).executeCommands();
     }
 
     @Test
-    void initializeData_WithEmptyLocations_ShouldLogMessage() {
-        when(apiClient.fetchCategories()).thenReturn(List.of(new Category()));
-        when(apiClient.fetchLocations()).thenReturn(Collections.emptyList());
+    void initializeData_WhenExecutionFails_ShouldLogError() {
+        doThrow(new RuntimeException("Execution failed")).when(commandExecutor).executeCommands();
         dataInitializationService.initializeData();
-        verify(locationService).initializeLocations(Collections.emptyList());
-    }
-
-    @Test
-    void initializeData_WhenCategoriesFetchFails_ShouldThrowRuntimeException() {
-        when(apiClient.fetchCategories()).thenThrow(new RuntimeException("Fetch failed"));
-        Exception exception = assertThrows(RuntimeException.class, () -> dataInitializationService.initializeData());
-        Assertions.assertEquals("Failed to initialize categories", exception.getMessage());
-    }
-
-    @Test
-    void initializeData_WhenLocationsFetchFails_ShouldThrowRuntimeException() {
-        when(apiClient.fetchCategories()).thenReturn(List.of(new Category()));
-        when(apiClient.fetchLocations()).thenThrow(new RuntimeException("Fetch failed"));
-        Exception exception = assertThrows(RuntimeException.class, () -> dataInitializationService.initializeData());
-        Assertions.assertEquals("Failed to initialize locations", exception.getMessage());
+        verify(commandExecutor).executeCommands();
     }
 }

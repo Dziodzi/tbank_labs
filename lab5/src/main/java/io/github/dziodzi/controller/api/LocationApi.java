@@ -53,4 +53,13 @@ public interface LocationApi {
     })
     @DeleteMapping("/{slug}")
     ResponseEntity<Void> deleteLocation(@Parameter(description = "Slug of the location to be deleted") @PathVariable String slug);
+    
+    @Operation(summary = "Get all snapshots for a location", description = "Returns a list of all snapshots for a location.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved snapshots"),
+            @ApiResponse(responseCode = "404", description = "Location not found")
+    })
+    @GetMapping("/{slug}/snapshots")
+    ResponseEntity<Collection<LocationDTO>> getLocationSnapshots(
+            @Parameter(description = "Slug of the location to retrieve snapshots") @PathVariable String slug);
 }

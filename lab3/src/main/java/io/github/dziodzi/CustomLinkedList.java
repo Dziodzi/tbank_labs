@@ -1,6 +1,8 @@
 package io.github.dziodzi;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.function.Consumer;
 
 public class CustomLinkedList<T> {
     private Node<T> head;
@@ -118,4 +120,32 @@ public class CustomLinkedList<T> {
 
         return current;
     }
+    
+    public CustomIterator<T> iterator() {
+        return new CustomLinkedListIterator();
+    }
+    
+    private class CustomLinkedListIterator implements CustomIterator<T> {
+        private Node<T> current = head;
+        
+        public boolean hasNext() {
+            return current != null;
+        }
+        
+        public T next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            T data = current.data;
+            current = current.next;
+            return data;
+        }
+        
+        public void forEachRemaining(Consumer<? super T> action) {
+            while(hasNext()) {
+                action.accept(next());
+            }
+        }
+    }
+    
 }
