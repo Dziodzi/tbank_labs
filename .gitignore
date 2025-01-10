@@ -31,3 +31,6 @@ bin/
 *.class
 *.log
 target/
+/gradlew.bat
+/gradlew
+/gradle/

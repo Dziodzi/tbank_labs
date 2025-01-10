@@ -1,0 +1,36 @@
+Benchmark, Mode, Throughput (ops/s), Latency (ms), Consumer Processing Time (ms)
+testKafkaLoadBalancingMultipleConsumers, AverageTime, 32325960,00, 4040896140,00, 32325960,00
+testRabbitMQLoadBalancingMultipleConsumers, AverageTime, 0,00, 0,00, 0,00
+Benchmark, Mode, Throughput (ops/s), Latency (ms), Consumer Processing Time (ms)
+testKafkaLoadBalancingMultipleConsumers, AverageTime, 0,00, 0,00, 0,00
+testRabbitMQLoadBalancingMultipleConsumers, AverageTime, 2617514640,00, 1595266950,00, 2617514640,00
+Benchmark, Mode, Throughput (ops/s), Latency (ms), Consumer Processing Time (ms)
+testKafkaLoadBalancingMultipleConsumers, AverageTime, 23561720,00, 4041219320,00, 23561720,00
+testRabbitMQLoadBalancingMultipleConsumers, AverageTime, 0,00, 0,00, 0,00
+Benchmark, Mode, Throughput (ops/s), Latency (ms), Consumer Processing Time (ms)
+testKafkaLoadBalancingMultipleConsumers, AverageTime, 0,00, 0,00, 0,00
+testRabbitMQLoadBalancingMultipleConsumers, AverageTime, 2522852800,00, 1582275980,00, 2522852800,00
+Benchmark, Mode, Throughput (ops/s), Latency (ms), Consumer Processing Time (ms)
+testKafkaLoadBalancingMultipleConsumers, AverageTime, 24286270,00, 10097184490,00, 24286270,00
+testRabbitMQLoadBalancingMultipleConsumers, AverageTime, 0,00, 0,00, 0,00
+Benchmark, Mode, Throughput (ops/s), Latency (ms), Consumer Processing Time (ms)
+testKafkaLoadBalancingMultipleConsumers, AverageTime, 24785560,00, 10109872060,00, 24785560,00
+testRabbitMQLoadBalancingMultipleConsumers, AverageTime, 0,00, 0,00, 0,00
+Benchmark, Mode, Throughput (ops/s), Latency (ms), Consumer Processing Time (ms)
+testKafkaLoadBalancingMultipleConsumers, AverageTime, 24489480,00, 10106037390,00, 24489480,00
+testRabbitMQLoadBalancingMultipleConsumers, AverageTime, 0,00, 0,00, 0,00
+Benchmark, Mode, Throughput (ops/s), Latency (ms), Consumer Processing Time (ms)
+testKafkaLoadBalancingMultipleConsumers, AverageTime, 24487590,00, 10104373160,00, 24487590,00
+testRabbitMQLoadBalancingMultipleConsumers, AverageTime, 0,00, 0,00, 0,00
+Benchmark, Mode, Throughput (ops/s), Latency (ms), Consumer Processing Time (ms)
+testKafkaLoadBalancingMultipleConsumers, AverageTime, 24587620,00, 10091452290,00, 24587620,00
+testRabbitMQLoadBalancingMultipleConsumers, AverageTime, 0,00, 0,00, 0,00
+Benchmark, Mode, Throughput (ops/s), Latency (ms), Consumer Processing Time (ms)
+testKafkaLoadBalancingMultipleConsumers, AverageTime, 0,00, 0,00, 0,00
+testRabbitMQLoadBalancingMultipleConsumers, AverageTime, 6342613600,00, 4131067050,00, 6342613600,00
+Benchmark, Mode, Throughput (ops/s), Latency (ms), Consumer Processing Time (ms)
+testKafkaLoadBalancingMultipleConsumers, AverageTime, 0,00, 0,00, 0,00
+testRabbitMQLoadBalancingMultipleConsumers, AverageTime, 6369188850,00, 3922749230,00, 6369188850,00
+Benchmark, Mode, Throughput (ops/s), Latency (ms), Consumer Processing Time (ms)
+testKafkaLoadBalancingMultipleConsumers, AverageTime, 0,00, 0,00, 0,00
+testRabbitMQLoadBalancingMultipleConsumers, AverageTime, 6198638190,00, 4063499950,00, 6198638190,00
