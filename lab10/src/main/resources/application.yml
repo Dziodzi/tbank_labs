@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: lab10
+  datasource:
+    url: jdbc:postgresql://localhost:5432/lab10
+    username: postgres
+    password: 7296
+    driver-class-name: org.postgresql.Driver
+    jpa:
+      hibernate:
+        ddl-auto: update
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.PostgreSQLDialect
+    liquibase:
+      enabled: true
+      change-log=classpath: db/changelog/db.changelog-master.yaml
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+custom:
+  links:
+    base-url: http://localhost:8080

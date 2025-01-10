@@ -1,0 +1,44 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: Dziodzi
+      changes:
+        - createTable:
+            tableName: events
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: date
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: place_id
+                  type: BIGSERIAL
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: events
+            baseColumnNames: place_id
+            referencedTableName: places
+            referencedColumnNames: id
+            constraintName: fk_events_places
+            onDelete: CASCADE
+
+        - createIndex:
+            tableName: events
+            indexName: index_place_id
+            columns:
+              - column:
+                  name: place_id
