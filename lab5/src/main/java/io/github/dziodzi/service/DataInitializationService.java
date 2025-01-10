@@ -2,6 +2,8 @@ package io.github.dziodzi.service;
 
 import io.github.dziodzi.service.command.CommandExecutor;
 import io.github.dziodzi.tools.LogExecutionTime;
+import io.github.dziodzi.entity.Category;
+import io.github.dziodzi.entity.Location;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
