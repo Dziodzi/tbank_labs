@@ -21,6 +21,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-aop'
     implementation 'org.springframework.boot:spring-boot-starter-logging'
     implementation 'org.springframework:spring-web'
+    implementation group: 'io.github.resilience4j', name: 'resilience4j-spring-boot2', version: '1.7.0'
 
     compileOnly 'org.projectlombok:lombok:1.18.30'
     annotationProcessor 'org.projectlombok:lombok:1.18.30'

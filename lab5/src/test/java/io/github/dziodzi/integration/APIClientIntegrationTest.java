@@ -61,7 +61,9 @@ public class APIClientIntegrationTest {
     public void setRestTemplate(RestTemplate restTemplate) {
         this.apiClient = new APIClient(restTemplate,
                 "http://" + wireMockContainer.getHost() + ":" + wireMockContainer.getMappedPort(8080) + "/public-api/v1.4/place-categories",
-                "http://" + wireMockContainer.getHost() + ":" + wireMockContainer.getMappedPort(8080) + "/public-api/v1.4/locations");
+                "http://" + wireMockContainer.getHost() + ":" + wireMockContainer.getMappedPort(8080) + "/public-api/v1.4/locations",
+                4, 2
+        );
     }
 
     @Test
