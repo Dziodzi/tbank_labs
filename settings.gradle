@@ -2,5 +2,11 @@ plugins {
     id 'org.gradle.toolchains.foojay-resolver-convention' version '0.5.0'
 }
 rootProject.name = 'tbank-labs'
-
-
+include 'lab2'
+include 'lab3'
+include 'lab4'
+include 'lab5'
+include 'lab6'
+include 'lab7'
+include 'lab8'
+include 'lab10'
