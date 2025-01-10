@@ -1,4 +1,4 @@
-package io.github.dziodzi.entity;
+package io.github.dziodzi.entity.exchange;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

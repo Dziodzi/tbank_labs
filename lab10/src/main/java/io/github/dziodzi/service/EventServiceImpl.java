@@ -8,6 +8,7 @@ import io.github.dziodzi.exception.InvalidBodyException;
 import io.github.dziodzi.repository.EventRepository;
 import io.github.dziodzi.repository.PlaceRepository;
 import io.github.dziodzi.service.interfaces.EventService;
+import io.github.dziodzi.tools.LogExecutionTime;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@LogExecutionTime
 public class EventServiceImpl implements EventService {
     
     private final EventRepository eventRepository;
